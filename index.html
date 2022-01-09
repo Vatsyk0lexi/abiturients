@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style/rejectstyle.css">
+    <link rel="stylesheet" href="/style/style.css">
+    <title>Вступник</title>
+</head>
+<body>
+    <div class="wrapper">
+        <header class="header ">
+            <div class="header__content content">
+                <div class="header__logo-wrapper">
+                    <figure>
+                        <img src="/images/gerb.png" alt="logo" class="header__logo logo">
+                        <span>IFNTUNG</span>
+                    </figure>
+                </div>
+                <div class="header__nav">
+                    <div class="menu__icon">
+                        <span></span>
+                    </div>
+                    <nav class="header__menu menu">
+                        <ul>
+                            <li><a data-goto =".goto_2" href="#" class="menu__link">конкурсний бал </a></li>
+                            <li><a data-goto =".goto_1" href="#" class="menu__link">освітні програми </a></li>
+                            <li><a data-goto =".goto_3" href="#" class="menu__link">про нас</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+        <main>
+            <div>
+                <section class="title goto_3">
+                    <div class="title__wrapper">
+                        <figure class="photo__wrapper">
+                            <img class="title_photo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6beBriXlughlOPBxJg1LVT9YjUGwSmzXgsg&usqp=CAU">
+                        <div class="title__description">
+                            <h1>Вступ 2022</h1>
+                            <h2>Івано-Франківський національний технічний університет нафти і газу</h2>
+                        </div>
+                    </div>
+                </section>
+                <section class="rules content">
+                    <div class="rules__wrapper">
+                        <div class="rules__icon">
+                            <img src="/images/rules.png" alt="">
+                            <a href="">Приймальна комісія</a>
+                        </div>
+                        <div class="rules__description">
+                            <h2><strong>Шановні вступники!</strong></h2>
+                            <p>На цьому сайті ви зможете переглянути основну інформацію щодо вимог вступу до <strong>ІФНТУНГ</strong> .</p>
+                            <p>Детальніше про правила прийому читайте на сайті <a href="">університету</a>.</p>
+                        </div>
+                    </div>
+                </section>
+                <div class="education__title goto_1">
+                    <h1>Спеціальності в ІФНТУНГ</h1>
+                </div>
+                <section class="education content">
+                    <div class="form-style-5">
+                        <form name="formSearch" class ="form-search">
+                            <div class="forms-item">
+                                <label for="sertificate1">Перший предмет</label>
+                                <select id="sertificate1" name="sertificate" >
+                                    <option value="Українська мова і література">Українська мова і література</option>
+                                </select>
+                            </div>
+                            <div class="forms-item">
+                                <label for="sertificate2">Другий предмет</label>
+                                <select id="sertificate2" name="sertificate">
+                                    
+                                    <option value="Іноземна мова">Іноземна мова</option>
+                                    <option value="Історія України">Історія України</option>
+                                    <option value="Математика" selected>Математика</option>
+                                    <option value="Біологія">Біологія</option>
+                                    <option value="Географія">Географія</option>
+                                    <option value="Фізика">Фізика</option>
+                                    <option value="Хімія">Хімія</option>
+                                </select>
+                            </div>
+                            <div class="forms-item">
+                                <label for="sertificate3">Третій предмет</label>
+                            <select id="sertificate3" name="sertificate">
+                                <option value="Іноземна мова" selected>Іноземна мова</option>
+                                <option value="Історія України">Історія України</option>
+                                <option value="Математика">Математика</option>
+                                <option value="Біологія">Біологія</option>
+                                <option value="Географія">Географія</option>
+                                <option value="Фізика">Фізика</option>
+                                <option value="Хімія">Хімія</option>
+                                <option value="Творчий конкурс">Творчий конкурс</option>
+                            </select>
+                            </div>
+                            <div class="forms-item">
+                                <button class="button search-program" id="searchPrograms" type="submit">Пошук</button>
+                            </div>
+                            
+                            </form>
+                    </div>
+                    <button id="get-programs">Всі програми</button>
+                    <table class="table">
+                        <thead class="table__head">
+                            <tr>
+                                <th>Галузь знань</th>
+                                <th>Спеціальність</th>
+                                <th>Програма</th>
+                                <th>Предмети ЗНО</th>
+                                <th>Детальна інформація</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table__body" id="data-programs">
+
+                        </tbody>
+                    </table>
+                    </section>
+                    <div class="education__title  goto_2">
+                        <h1>Розрахунок конкурсного балу</h1>
+                    </div>
+                    <section class="education content">
+                    <div class="form-style-5">
+                        <div class="formScore-wrapper">
+                        <form name="formScoreCount" class="form-score">
+                            <legend class="form-title">конкурсний бал</legend>
+                            <div class="form-item">
+                                <div class="form-item_1">
+                                    <label class="form-label" for="valueCert1">Оцінка:</label>
+                                    <input type="number" id="valueCert1" class="rating" name="rating" >
+                                </div>
+                                <div class="form-item_2">
+                                    <label  class="form-label" for="subject1">Перший предмет</label>
+                                    <select id="subject1" name="sertificate" >
+                                    <option value="Українська мова і література">Українська мова і література</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-item">
+                                <div class="form-item_1">
+                                    <label class="form-label" for="valueCert2">Оцінка:</label>
+                                    <input name="rating" type="number" id="valueCert2" class="rating">
+                                </div>
+                                <div class="form-item_2">
+                                    <label class="form-label" for="subject2">Другий предмет</label>
+                                    <select id="subject2" name="sertificate">
+                                        
+                                        <option value="Іноземна мова">Іноземна мова</option>
+                                        <option value="Історія України">Історія України</option>
+                                        <option value="Математика" selected>Математика</option>
+                                        <option value="Біологія">Біологія</option>
+                                        <option value="Географія">Географія</option>
+                                        <option value="Фізика">Фізика</option>
+                                        <option value="Хімія">Хімія</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-item">
+                                <div class="form-item_1">
+                                    <label class="form-label" for="valueCert3">Оцінка:</label>
+                                    <input name="rating" type="number" id="valueCert3" class="rating">
+                                </div>
+                                <div class="form-item_2">
+                                    <label class="form-label" for="subject3">Третій предмет</label>
+                                    <select id="subject3" name="sertificate">
+                                        <option value="Іноземна мова" selected>Іноземна мова</option>
+                                        <option value="Історія України">Історія України</option>
+                                        <option value="Математика">Математика</option>
+                                        <option value="Біологія">Біологія</option>
+                                        <option value="Географія">Географія</option>
+                                        <option value="Фізика">Фізика</option>
+                                        <option value="Хімія">Хімія</option>
+                                        <option value="Творчий конкурс">Творчий конкурс</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-item">
+                                <div class="form-item_1">
+                                    <label class="form-label" for="valueAtest">Середній бал Атестату </label>
+                                    <input name="rating" type="number" id="valueAtest" class="rating">
+                                </div>
+                                <div class="form-item_2">
+                                    <div class="checkbox">
+                                        <input type="checkbox" name="checkbox" id="checkboxSchool">
+                                        <label class="form-label" for="checkboxSchool">Навчалися в сільській школі</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-item">
+                                <div class="form-item_alone">
+                                    <label class="form-label" for="education-programs">Освітня програма</label>
+                                    <select id="education-programs" name="educationPrograms">
+                                        <option selected value="За обраними предметами" >За обраними предметами</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="button-wrapper">
+                                <button class="button" id="CountScore" type="submit">Розрахунок</button>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="" id="data-rating">
+                        <table class="table table-rating" style="display: none"> 
+                            <thead class="table__head">
+                                <tr>
+                                    <th>Ваш конкурсний бал</th>
+                                    <th>Спеціальність</th>
+                                    <th>Програма</th>
+                                    <th> Прохідний конкурсний бал того року </th>
+                                </tr>
+                            </thead>
+                            <tbody class="table__body body-rating">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                
+            </div>
+
+        </main>
+        <footer class="footer">
+            <div class="footer__content content">
+                <p>© 2022 ІФНТУНГ</p>
+                <figure class="footer__logo-wrapper">
+                    <img src="/images/gerb.png" alt="logo" class="footer__logo logo">
+                </figure>
+                <p>Всі права захищено</p>
+            </div>
+        </footer>
+    </div>
+    <script src="/javascript/index.js"></script>
+</body>
+</html>
