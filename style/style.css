@@ -190,6 +190,7 @@ main {
 .form-search {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 .form-search .forms-item {
@@ -225,6 +226,29 @@ main {
   border: 1px solid #bdbdbd;
   border-width: 1px 1px 3px;
   transition: all 0.3s ease;
+}
+
+@media (min-width: 710px) and (max-width: 900px) {
+  .form-search {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .forms-item {
+    width: 280px !important;
+    margin: 20px 10px 20px 10px;
+    position: relative;
+  }
+  .forms-item label {
+    font-size: 16px;
+    letter-spacing: 1.3px;
+    text-align: center;
+  }
+  .forms-item select {
+    width: 90% !important;
+  }
+  .forms-item:last-child {
+    margin: 0 !important;
+  }
 }
 
 #get-programs {
@@ -306,6 +330,10 @@ form * {
   box-shadow: 0 0 15px red;
 }
 
+.forms-item._error select {
+  box-shadow: 0 0 15px red;
+}
+
 .button-wrapper {
   position: relative;
   height: 50px;
@@ -328,9 +356,13 @@ form * {
   .form-score {
     margin: 0 auto;
   }
+  .form-score .fi {
+    flex-direction: column !important;
+  }
   .form-score .form-item {
     display: flex;
     justify-content: center !important;
+    flex-direction: column-reverse;
     align-items: center;
     flex-wrap: wrap;
   }
@@ -604,6 +636,10 @@ form * {
 
 .table tbody .row .subjects {
   text-align: left;
+}
+
+.number-rating {
+  color: #b64242;
 }
 
 .button {
