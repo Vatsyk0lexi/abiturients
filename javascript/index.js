@@ -6,7 +6,6 @@ const getPrograms = document.getElementById('get-programs')
 const detailsInfoBtn = document.getElementsByClassName('details-info');
 const listOfProgram = document.getElementById('education-programs');
 const formRating = document.forms.formScoreCount;
-const ratingBtn = document.getElementById('CountScore');
 const formSearch = document.forms.formSearch;
 const SubjectFromSearchForm = formSearch.sertificate;
 const SubjectFromRatingForm = formRating.sertificate;
@@ -28,7 +27,7 @@ const state = {
     programForDetail:{
         id: ''
     },
-    programsWithDetails:[],
+    programWithDetails:[],
 }
 // -------------------------------------- -----------------------------------------//
 
@@ -104,215 +103,61 @@ async function CreateTableWithPrograms() {
 }
 
 
-formSearch.addEventListener('submit',async(e)=>{
-    e.preventDefault();
-    clearSearchedPrograms();
-    savingSelectedCertificates(formSearch);
-    let firstRequest = await postRequest(1);
-    let secondRequest = await extraSearch(1);
-    if(firstRequest||secondRequest){
-        
-        fillData(state.programsSearchedForForm,0); //! ТУТ
-    }else if(firstRequest == false && secondRequest == false){
-        alert("Нічого не знайдено")
-    }
-})
+formSearch.addEventListener('submit', formSearchSend)
 
-formRating.addEventListener('submit',formSend);
+formRating.addEventListener('submit',formRatingSend);
 
 // -----------------------------------------------------------------------------------//
 
+// -------------------------------------- Форма Пошуку ОП-----------------------------------------//
 
-async function getDetails(index, identifier) {
-    clearDetailsPrograms();
-    if(identifier == 1){ // якщо отримані дані із GET-запроса
-        state.EducationalPrograms.sort((a,b) =>a.domain.name.localeCompare(b.domain.name))
-        console.log(state.EducationalPrograms[index])
-        let currentProgramId = state.EducationalPrograms[index]._id;  //***! ПОФІКСИТИ ЩОБ ПРАЦЮВАЛО ЯК ДЛЯ ЗНАЙДЕНИХ ПРОГ ТАК І ДЛЯ ЗАГРУЖЕНИХ ВІДРАЗУ */
-        state.programForDetail.id =currentProgramId;
-        let reques= await getInfoRequest(state.programForDetail.id)
-        let identifier;
-        if(reques){
-            identifier = true;
-        }else{
-            identifier= false;
-        }
-        console.log(identifier);
-        FillDataProgramDetail(index,identifier);
-    }
-    else if(identifier==0){// якщо отримані дані із POST-запроса
-        console.log(state.programsSearchedForForm)
-        state.programsSearchedForForm.sort((a,b) =>a.domain.name.localeCompare(b.domain.name))
-        console.log(state.programsSearchedForForm[index])
-        let currentProgramId = state.programsSearchedForForm[index]._id;  //***! ПОФІКСИТИ ЩОБ ПРАЦЮВАЛО ЯК ДЛЯ ЗНАЙДЕНИХ ПРОГ ТАК І ДЛЯ ЗАГРУЖЕНИХ ВІДРАЗУ */
-        state.programForDetail.id =currentProgramId;
-        let reques= await getInfoRequest(state.programForDetail.id)
-        let identifier = false;
-        if(reques){
-            identifier = true;
-        }
-        FillDataProgramDetail(index,identifier);
-    }
-
-}
-
-function CreateDataProgramDetail(data, index, identifier){
-    if(identifier){
-            let arrSubjects = data[0].subjects.split(";")
-        let subject= arrSubjects.join(",  ")
-        if(data[0].contacts.phone==''){
-            data[0].contacts.phone = "Немає"
-        }
-        if(data[0].contacts.email == ''){
-            data[0].contacts.email = "Немає"
-        }
-        if(window.matchMedia("(max-width: 900px)").matches){
-        return `
-                <td data-label="Кафедра" class="kafedra">${data[0].kathedra.name}</td>
-                <td data-label="Контакти" class="contacts">Номер телефону:<span style = "font-weight: bold; font-size: 17px"> ${data[0].contacts.phone}</span><br> email: <span style = "font-weight: bold; font-size: 17px"> ${data[0].contacts.email}</span></td>
-                <td data-label="Опис" class="description">${data[0].desc}</td>
-                <td data-label="Предмети" class="subjects" >${subject}</td>
-                <td data-label="Додаткова інформація" class="info"><a href=${data[0].profile} target="_blank">Додаткова інформація</a></td>
-                <td data-label="Очистити" class="kafedra"><button class = "button" onclick="removeDetails(${index})">Очистити</button></td>
-                `
-        }else{
-            return `
-            <td data-label="Кафедра" class="kafedra">${data[0].kathedra.name}<br><br><button class = "button" onclick="removeDetails(${index})">Очистити</button></td>
-            <td data-label="Контакти" class="contacts">Номер телефону:<span style = "font-weight: bold; font-size: 17px"> ${data[0].contacts.phone}</span><br> email: <span style = "font-weight: bold; font-size: 17px"> ${data[0].contacts.email}</span></td>
-            <td data-label="Опис" class="description">${data[0].desc}</td>
-            <td data-label="Предмети" class="subjects" >${subject}</td>
-            <td data-label="Додаткова інформація" class="info"><a href=${data[0].profile} target="_blank">Додаткова інформація</a></td>
-            `
-        }
-    }
-    else if(identifier==false){
-
-        if(window.matchMedia("(max-width: 900px)").matches)
-        {
-            return `
-            <td data-label="Data not Found" class="kafedra">НІЧОГО НЕ ЗНАЙДЕНО!</td>
-            <td data-label="Очистити" class="kafedra"><button class = "button" onclick="removeDetails(${index})">Очистити</button></td>
-            `
-        }else{
-        return `
-        <td data-label="Data not Found" class="kafedra"><button class = "button" onclick="removeDetails(${index})">Очистити</button></td>
-        <td data-label="Data not Found" class="kafedra">НІЧОГО НЕ ЗНАЙДЕНО!</td>
-        <td data-label="Data not Found" class="kafedra">НІЧОГО НЕ ЗНАЙДЕНО!</td>
-        <td data-label="Data not Found" class="kafedra">НІЧОГО НЕ ЗНАЙДЕНО!</td>
-        <td data-label="Очистити" class="kafedra">НІЧОГО НЕ ЗНАЙДЕНО!</td>
-        `}
-    }
-
-
-
-}
-
-function removeDetails(index){
-    let rows = document.querySelectorAll('.row');
-    rows[index].innerHTML = '';
-    let theads = document.querySelectorAll('.details');
-    theads[index].style.display = 'none';
-
-}
-
-function FillDataProgramDetail(index, identifier) {
-    let rows = document.querySelectorAll('.row');
-    console.log(rows[index]);
-    let theads = document.querySelectorAll('.details');
-    console.log(theads[index]);
-    theads[index].style.display="";
-    rows[index].innerHTML="";
-    rows[index].innerHTML += CreateDataProgramDetail(state.programsWithDetails, index, identifier);
+async function formSearchSend(e){
+    e.preventDefault();
+    let error = formSearchValidate(formSearch);
     
-
-
-}
-
-const createTemplate = (result,index,identity) => {
-    let certificates = result.certificates.map(item=>item.name)
-    let certificate = certificates.join(', ')
-    return `
-            <tr>
-                <td data-label="Галузь знань" class="galuz">${result.domain.name}</td>
-                <td data-label="Спеціальність" class="speciality"> ${result.speciality.name}</td>
-                <td data-label="Програма" class="program" >${result.program.name}</td>
-                <td data-label="Предмети ЗНО" class="zno-subjects" >${certificate}</td>
-                <td data-label="Детальна інформація"><button class="button" onclick="getDetails(${index}, ${identity})">Детальніше</button></td>
-            </tr>
-            <tr class="details" style= "display: none;">
-                <th>Кафедра</th>
-                <th>Контакти</th>
-                <th class = "desc">Опис</th>
-                <th class = "subj">Предмети</th>
-                <th>Посилання</th>
-            </tr>
-            <tr class="row ${index}"></tr>
-    `
-}
-
-
-    const fillData = (data, identity) =>{
-        dataPrograms.innerHTML = '';
-        if(data.length){
-            data.sort((a,b) =>a.domain.name.localeCompare(b.domain.name))
-            data.forEach((data,index) => dataPrograms.innerHTML += createTemplate(data,index,identity));
+    if(error==0){
+        clearSearchedPrograms();
+        savingSelectedCertificates(formSearch);
+        let firstRequest = await postRequest(1);
+        let secondRequest = await extraSearch(1);
+        if(firstRequest||secondRequest){
+            fillData(state.programsSearchedForForm,0);
+            formSearch.reset();
+        }else if(firstRequest == false && secondRequest == false){
+            alert("Нічого не знайдено")
         }
-}
-
-const savingSelectedCertificates= (form) => {
-    let selectedCertificate1 =  form.sertificate[0].options.selectedIndex;
-    let selectedCertificate2 =  form.sertificate[1].options.selectedIndex;
-    let selectedCertificate3 =  form.sertificate[2].options.selectedIndex;
-
-    let selectedCertificate1Value = form.sertificate[0].options[selectedCertificate1].value;
-    let selectedCertificate2Value = form.sertificate[1].options[selectedCertificate2].value;
-    let selectedCertificate3Value = form.sertificate[2].options[selectedCertificate3].value;
-
-    state.selectedСertificates.nameCert1=selectedCertificate1Value;
-    state.selectedСertificates.nameCert2=selectedCertificate2Value;
-    state.selectedСertificates.nameCert3=selectedCertificate3Value;
-
+    }
+    else{
+        console.log("не пройшло валідацію!")
+    }
     
 }
 
-const clearEducationalPrograms=()=>{
-    state.EducationalPrograms.splice(0,state.EducationalPrograms.length);
-}
-
-const clearSelectedCertificates=()=>{
-    state.selectedСertificates.nameCert1 = '';
-    state.selectedСertificates.nameCert2 = '';
-    state.selectedСertificates.nameCert3 = '';
-}
-
-const clearSearchedPrograms=()=>{
-    state.programsSearchedForForm.splice(0,state.programsSearchedForForm.length);
-}
-
-const clearSearchedProgramsForRating=()=>{
-    state.programsSearchedForCountRating.splice(0,state.programsSearchedForCountRating.length);
-}
-
-function clearDetailsPrograms() {
-    state.programsWithDetails.splice(0,state.programsWithDetails.length);
-}
-
-const extraSearch = async(identifier) =>{  
-    state.selectedСertificates.nameCert1="Українська мова"
-    if(identifier == 1){
-        return await postRequest(1);
-    }else if(identifier == 0){
-        return await postRequest(0);
+function formSearchValidate(form) {
+    let error = 0;
+    clearSelectedCertificates();
+    savingSelectedCertificates(form);
+    formRemoveError(SubjectFromSearchForm[2])
+    if(state.selectedСertificates.nameCert3 == state.selectedСertificates.nameCert1 || state.selectedСertificates.nameCert3 == state.selectedСertificates.nameCert2)
+    {
+        error++;
+        formAddError(SubjectFromSearchForm[2]);
     }
+    return error;
 }
 
+// -------------------------------------- -----------------------------------------//
 
-async function formSend(e){
+
+
+// -------------------------------------- Форма Кокурсного Балу -----------------------------------------//
+
+async function formRatingSend(e){
     e.preventDefault();
     clearEducationalPrograms();
     await getRequest();
 
-    let error = formValidate(formRating);
+    let error = formRatingValidate(formRating);
     if(error === 0){
         let selectedIndex = formRating.educationPrograms.options.selectedIndex;
         let selectedOption = formRating.educationPrograms.options[selectedIndex].value;
@@ -329,14 +174,14 @@ async function formSend(e){
 }
 
 
-function formValidate(form) {
+
+function formRatingValidate(form) {
     let error = 0;
     let copyEdu = state.EducationalPrograms.slice();
     copyEdu.sort((a,b) =>a.program.name.localeCompare(b.program.name));
     let inputScore = document.querySelectorAll('.rating'); // поля для заповнення оцінки
     let selectedIndex = formRating.educationPrograms.options.selectedIndex;
     let selectedOption = formRating.educationPrograms.options[selectedIndex].value;
-    console.log("Selected Option value:", selectedOption)
     if(selectedOption == "За обраними предметами"){
         for (let index = 0; index < inputScore.length; index++) {
             const input = inputScore[index];
@@ -452,7 +297,6 @@ async function AllSearchedProgramsToCountRating(){
     savingSelectedCertificates(formRating);
     await postRequest(0);
     await extraSearch(0);
-    console.log(state.programsSearchedForCountRating)
     fillRating(state.programsSearchedForCountRating);
 }
 
@@ -475,19 +319,19 @@ function createRating(selectedEducationProgram, rating){
             }
         return `
         <tr >
-            <td data-label = "Ваш конкурсний бал" class="user-rating">${rating}</td>
+            <td data-label = "Ваш конкурсний бал" class="number-rating">${rating}</td>
             <td data-label = "Спеціальність" class="speciality">${selectedEducationProgram.speciality.name}</td>
             <td data-label = "Програма" class="program" >${selectedEducationProgram.program.name}</td>
-            <td data-label = "Прохідний конкурсний бал того року" class="last-year-result">${lastYearResult}</td>
+            <td data-label = "Тогорічний бал на стипендію" class="number-ratingt">${lastYearResult}</td>
         </tr> 
         `
     }else{
         return `
         <tr >
-            <td data-label = "Ваш конкурсний бал" class="user-rating">${rating}</td>
+            <td data-label = "Ваш конкурсний бал" class="number-rating">${rating}</td>
             <td data-label = "Спеціальність"  class="speciality">${selectedEducationProgram.speciality.name}</td>
             <td data-label = "Програма"class="program" >${selectedEducationProgram.program.name}</td>
-            <td  data-label = "Прохідний конкурсний бал того року" class="last-year-result">Немає даних</td>
+            <td  data-label = "Тогорічний бал на стипендію" class="number-rating">Немає даних</td>
         </tr> 
         `
     }
@@ -499,9 +343,7 @@ async function SelectedProgramToCountRating(dataCopy){
 
     let selectedIndex = formRating.educationPrograms.options.selectedIndex;
     let selectedEducationProgram = dataCopy[formRating.educationPrograms.options[selectedIndex].value];
-    console.log("Обрана ОП:",selectedEducationProgram);
     let rating =  countRating(selectedEducationProgram)
-    console.log('Конкурсний бал:',rating);
     if(selectedEducationProgram.additions.hasOwnProperty('lastPoint')){
         let lastYearResult = selectedEducationProgram.additions.lastPoint;
     if( lastYearResult == null){
@@ -553,8 +395,158 @@ function countRating(educationProgram){
             rating = rating*1.02;
         }
     }
-    console.log('Освітня програма:'+educationProgram.program.name+'\nБал 1:  '+formRating.rating[0].value+'  коф1: '+educationProgram.certificates[0].coef+'Бал 2:  '+formRating.rating[1].value+'  коф2: '+educationProgram.certificates[1].coef+'Бал 3:  '+formRating.rating[2].value+'  коф3: '+educationProgram.certificates[2].coef+'Бал атестату:  '+formRating.rating[3].value+'  кофAtest: '+educationProgram.attestation.coef +'\n Загальна оцінка: '+rating);
     return parseFloat(rating.toFixed(1))
+}
+
+// -------------------------------------- -----------------------------------------//
+
+
+const savingSelectedCertificates= (form) => {
+    let selectedCertificate1 =  form.sertificate[0].options.selectedIndex;
+    let selectedCertificate2 =  form.sertificate[1].options.selectedIndex;
+    let selectedCertificate3 =  form.sertificate[2].options.selectedIndex;
+
+    let selectedCertificate1Value = form.sertificate[0].options[selectedCertificate1].value;
+    let selectedCertificate2Value = form.sertificate[1].options[selectedCertificate2].value;
+    let selectedCertificate3Value = form.sertificate[2].options[selectedCertificate3].value;
+
+    state.selectedСertificates.nameCert1=selectedCertificate1Value;
+    state.selectedСertificates.nameCert2=selectedCertificate2Value;
+    state.selectedСertificates.nameCert3=selectedCertificate3Value;
+}
+
+
+
+
+// --------------------------------------КНОПКА Отримання детальної інформації про ОП-----------------------------------------//
+
+async function getDetails(index, identifier) {
+    clearDetailsPrograms();
+    if(identifier == 1){ // якщо отримані дані із GET-запроса
+        state.EducationalPrograms.sort((a,b) =>a.domain.name.localeCompare(b.domain.name))
+        let currentProgramId = state.EducationalPrograms[index]._id;  
+        state.programForDetail.id =currentProgramId;
+        let reques= await getInfoRequest(state.programForDetail.id)
+        let identificator;
+        if(reques){
+            identificator = true;
+        }else{
+            identificator= false;
+        }
+        FillDataProgramDetail(index,identificator);
+    }
+    else if(identifier==0){// якщо отримані дані із POST-запроса
+        state.programsSearchedForForm.sort((a,b) =>a.domain.name.localeCompare(b.domain.name))
+        let currentProgramId = state.programsSearchedForForm[index]._id; 
+        state.programForDetail.id =currentProgramId;
+        let reques= await getInfoRequest(state.programForDetail.id)
+        let identificator = false;
+        if(reques){
+            identificator = true;
+        }
+        FillDataProgramDetail(index,identificator);
+    }
+}
+
+function CreateDataProgramDetail(data, index, identifier){
+    if(identifier){
+            let arrSubjects = data[0].subjects.split(";")
+        let subject= arrSubjects.join(",  ")
+        if(data[0].contacts.phone==''){
+            data[0].contacts.phone = "Немає"
+        }
+        if(data[0].contacts.email == ''){
+            data[0].contacts.email = "Немає"
+        }
+        if(window.matchMedia("(max-width: 900px)").matches){
+        return `
+                <td data-label="Кафедра" class="kafedra">${data[0].kathedra.name}</td>
+                <td data-label="Контакти" class="contacts">Номер телефону:<span style = "font-weight: bold; font-size: 17px"> ${data[0].contacts.phone}</span><br> email: <span style = "font-weight: bold; font-size: 17px"> ${data[0].contacts.email}</span></td>
+                <td data-label="Опис" class="description">${data[0].desc}</td>
+                <td data-label="Предмети" class="subjects" >${subject}</td>
+                <td data-label="Додаткова інформація" class="info"><a href=${data[0].profile} target="_blank">Додаткова інформація</a></td>
+                <td data-label="Очистити" class="kafedra"><button class = "button" onclick="removeDetails(${index})">Очистити</button></td>
+                `
+        }else{
+            return `
+            <td data-label="Кафедра" class="kafedra">${data[0].kathedra.name}<br><br><button class = "button" onclick="removeDetails(${index})">Очистити</button></td>
+            <td data-label="Контакти" class="contacts">Номер телефону:<span style = "font-weight: bold; font-size: 17px"> ${data[0].contacts.phone}</span><br> email: <span style = "font-weight: bold; font-size: 17px"> ${data[0].contacts.email}</span></td>
+            <td data-label="Опис" class="description">${data[0].desc}</td>
+            <td data-label="Предмети" class="subjects" >${subject}</td>
+            <td data-label="Додаткова інформація" class="info"><a href=${data[0].profile} target="_blank">Додаткова інформація</a></td>
+            `
+        }
+    }
+    else if(identifier==false){
+
+        if(window.matchMedia("(max-width: 900px)").matches)
+        {
+            return `
+            <td data-label="Data not Found" class="kafedra">НІЧОГО НЕ ЗНАЙДЕНО!</td>
+            <td data-label="Очистити" class="kafedra"><button class = "button" onclick="removeDetails(${index})">Очистити</button></td>
+            `
+        }else{
+        return `
+        <td data-label="Data not Found" class="kafedra"><button class = "button" onclick="removeDetails(${index})">Очистити</button></td>
+        <td data-label="Data not Found" class="kafedra">НІЧОГО НЕ ЗНАЙДЕНО!</td>
+        <td data-label="Data not Found" class="kafedra">НІЧОГО НЕ ЗНАЙДЕНО!</td>
+        <td data-label="Data not Found" class="kafedra">НІЧОГО НЕ ЗНАЙДЕНО!</td>
+        <td data-label="Очистити" class="kafedra">НІЧОГО НЕ ЗНАЙДЕНО!</td>
+        `}
+    }
+}
+
+function removeDetails(index){
+    let rows = document.querySelectorAll('.row');
+    rows[index].innerHTML = '';
+    let theads = document.querySelectorAll('.details');
+    theads[index].style.display = 'none';
+}
+
+function FillDataProgramDetail(index, identifier) {
+    let rows = document.querySelectorAll('.row');
+    let theads = document.querySelectorAll('.details');
+    theads[index].style.display="";
+    rows[index].innerHTML="";
+    rows[index].innerHTML += CreateDataProgramDetail(state.programWithDetails, index, identifier);
+}
+
+// -------------------------------------- -----------------------------------------//
+
+
+
+
+// ---------------------------- Функції, які виконуються під час запуску вікна -----------------------------------------//
+
+const createTemplate = (result,index,identity) => {
+    let certificates = result.certificates.map(item=>item.name)
+    let certificate = certificates.join(', ')
+    return `
+            <tr>
+                <td data-label="Галузь знань" class="galuz">${result.domain.name}</td>
+                <td data-label="Спеціальність" class="speciality"> ${result.speciality.name}</td>
+                <td data-label="Програма" class="program" >${result.program.name}</td>
+                <td data-label="Предмети ЗНО" class="zno-subjects" >${certificate}</td>
+                <td data-label="Детальна інформація"><button class="button" onclick="getDetails(${index}, ${identity})">Детальніше</button></td>
+            </tr>
+            <tr class="details" style= "display: none;">
+                <th>Кафедра</th>
+                <th>Контакти</th>
+                <th class = "desc">Опис</th>
+                <th class = "subj">Предмети</th>
+                <th>Посилання</th>
+            </tr>
+            <tr class="row ${index}"></tr>
+    `
+}
+
+
+    const fillData = (data, identity) =>{
+        dataPrograms.innerHTML = '';
+        if(data.length){
+            data.sort((a,b) =>a.domain.name.localeCompare(b.domain.name))
+            data.forEach((data,index) => dataPrograms.innerHTML += createTemplate(data,index,identity));
+        }
 }
 
 
@@ -570,6 +562,39 @@ const fillEduProgOption = (data) =>{
         data.forEach((data,index) => listOfProgram.innerHTML += createEduProg(data,index));
     }
 }
+// ---------------------------- -----------------------------------------//
+
+
+// --------------------------------------Функції очищення даних в сховищі-----------------------------------------//
+
+const clearEducationalPrograms=()=>{
+    state.EducationalPrograms.splice(0,state.EducationalPrograms.length);
+}
+
+const clearSelectedCertificates=()=>{
+    state.selectedСertificates.nameCert1 = '';
+    state.selectedСertificates.nameCert2 = '';
+    state.selectedСertificates.nameCert3 = '';
+}
+
+const clearSearchedPrograms=()=>{
+    state.programsSearchedForForm.splice(0,state.programsSearchedForForm.length);
+}
+
+const clearSearchedProgramsForRating=()=>{
+    state.programsSearchedForCountRating.splice(0,state.programsSearchedForCountRating.length);
+}
+
+function clearDetailsPrograms() {
+    state.programWithDetails.splice(0,state.programWithDetails.length);
+}
+
+// -------------------------------------- -----------------------------------------//
+
+
+
+
+
 
 
 //--------------------------------------ЗАПИТИ НА СЕРВЕР---------------------------------------------// 
@@ -604,10 +629,9 @@ async function postRequest(identifier){
             }
         }
         else{
-            console.log("Проблеми із сервером, дані не будуть додані до сховища!")
+            console.log("Відповідь із сервера не надійшла, дані не будуть додані до сховища!")
         }
         if(response.status == 404){
-            console.log("Status 404 NOT FOUND")
             return false;
         }else{
             return true;
@@ -624,20 +648,28 @@ async function getInfoRequest(id){
         const response = await fetch(requestUrl + 'stat/' + id);
         if(response.ok){
             const items = await response.json();
-            return state.programsWithDetails = state.programsWithDetails.concat(items);
+            return state.programWithDetails = state.programWithDetails.concat(items);
             
         }
         else{
-            console.log("Проблеми із сервером, дані не будуть додані до сховища!")
+            console.log("Відповідь із сервера не надійшла, дані не будуть додані до сховища!")
         }
         if(response.status == 404){
-            console.log("Status 404 NOT FOUND")
             return false;
         }else{
             return true;
         }
     } catch (err) {
         return alert(err);
+    }
+}
+
+async function extraSearch(identifier) {  
+    state.selectedСertificates.nameCert1="Українська мова"
+    if(identifier == 1){
+        return await postRequest(1);
+    }else if(identifier == 0){
+        return await postRequest(0);
     }
 }
 //-----------------------------------------------------------------------------------// 
