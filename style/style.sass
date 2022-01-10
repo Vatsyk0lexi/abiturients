@@ -1,10 +1,7 @@
-// Змінні
 
 $bgcHeaderandFooter: #1e2024
-$bgcContent: #f0cbcb
-$bgcButton: green
 $HeaderHight: 70px
-// Міксини    
+
 body
     height: 100vh
     line-height: 1
@@ -162,7 +159,7 @@ main
 .form-search
     display: flex
     flex-wrap: wrap
-
+    justify-content: space-around
     .forms-item
         width: 300px
         margin: 20px 10px 20px 10px
@@ -191,6 +188,23 @@ main
         border-width: 1px 1px 3px
         transition: all 0.3s ease
 
+@media (min-width: 710px) and (max-width: 900px)
+    .form-search
+        display: flex
+        flex-wrap: wrap
+
+    .forms-item
+        width: 280px !important
+        margin: 20px 10px 20px 10px
+        position: relative
+        label
+            font-size: 16px
+            letter-spacing: 1.3px
+            text-align: center
+        select
+            width: 90% !important
+        &:last-child
+            margin: 0 !important
 #get-programs
     width: 200px
     height: 45px
@@ -252,6 +266,11 @@ form *
         select
             box-shadow: 0 0 15px red
 
+.forms-item
+    &._error
+        select
+            box-shadow: 0 0 15px red
+
 .button-wrapper
     position: relative
     height: 50px
@@ -268,11 +287,15 @@ form *
         background-color: $bgcHeaderandFooter
     .form-score
         margin: 0 auto
+        .fi
+            flex-direction: column !important
         .form-item
             display: flex
             justify-content: center !important
+            flex-direction: column-reverse
             align-items: center
             flex-wrap: wrap
+
             &_alone
                 display: flex
                 flex-direction: column
@@ -491,6 +514,8 @@ form *
         .subjects
             text-align: left
 
+.number-rating
+    color: #b64242
 .button
     width: 130px
     text-decoration: none
